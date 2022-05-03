@@ -11,54 +11,6 @@ tags: [Spring]
 **Here is some bold text**
 
 ## Here is a secondary heading
-
-1. 현황
-1.1. DB pool 설정이 적용되지 않고 있음
-spring boot1방식의 DB pool설정으로 되어 있어서 설정이 무시되었음(그래서 모든 설정이 기본값으로 적용되고 있었음. 아래 '3.참고')
-1.2. 죽은 connection 접근 문제
-Mysql 서버상의 유휴 커넥션 최대 유지 시간은 10분으로 설정되어 있으나
-SHOW VARIABLES LIKE 'wait_timeout'; 👉 600(10분)
-
-HikariPool의 유휴 커넥션 최대 유지 시간은 기본값 30분으로 적용 되어 있어서 10분 동안 DB사용이 없으면 죽은 connection 접근 문제 발생
-이 때 자동으로 재접속 하지만 아래와 같은 오류메시지가 많이 쌓이고(2000라인 정도) 응답지연(0.5초 정도) 발생
-HikariPool-2 - Failed to validate connection net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy@6bd39c6c (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
-
-2. 조치내용
-application-*.yml 파일들의 pool설정 추가
-idle-timeout을 9분으로 함 : Mysql서버쪽에서 접속을 끊기 전에 pool에서 종료하므로 죽은 connection 접근 문제예방
-idle-timeout: 540000
-
-사용자쪽 수정한 파일들 : https://gitlab.com/oz-z/beamz2/-/merge_requests/39/diffs
-3. 참고
-spring boot2 + hikari ( 참고 : https://stackoverflow.com/a/52326856/4766882 ) 
-설정에서 hikari라는 예약어를 사용하지 않음
-DB주소 설정 이름으로 jdbcUrl를 사용
- 1. 현황
-1.1. DB pool 설정이 적용되지 않고 있음
-spring boot1방식의 DB pool설정으로 되어 있어서 설정이 무시되었음(그래서 모든 설정이 기본값으로 적용되고 있었음. 아래 '3.참고')
-1.2. 죽은 connection 접근 문제
-Mysql 서버상의 유휴 커넥션 최대 유지 시간은 10분으로 설정되어 있으나
-SHOW VARIABLES LIKE 'wait_timeout'; 👉 600(10분)
-
-HikariPool의 유휴 커넥션 최대 유지 시간은 기본값 30분으로 적용 되어 있어서 10분 동안 DB사용이 없으면 죽은 connection 접근 문제 발생
-이 때 자동으로 재접속 하지만 아래와 같은 오류메시지가 많이 쌓이고(2000라인 정도) 응답지연(0.5초 정도) 발생
-HikariPool-2 - Failed to validate connection net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy@6bd39c6c (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
-
-2. 조치내용
-application-*.yml 파일들의 pool설정 추가
-idle-timeout을 9분으로 함 : Mysql서버쪽에서 접속을 끊기 전에 pool에서 종료하므로 죽은 connection 접근 문제예방
-idle-timeout: 540000
-
-사용자쪽 수정한 파일들 : https://gitlab.com/oz-z/beamz2/-/merge_requests/39/diffs
-3. 참고
-spring boot2 + hikari ( 참고 : https://stackoverflow.com/a/52326856/4766882 ) 
-설정에서 hikari라는 예약어를 사용하지 않음
-DB주소 설정 이름으로 jdbcUrl를 사용
- 
-
- 옳은 판단이라고 생각합니다, 설정 변경 및 적용 부탁 드립니다.
-
-추가로 ( @이 금평 ),
 DB connection 추가 옵션에 대한 설명이 잘 나온 사이트 있어서 공유합니다.
 https://freedeveloper.tistory.com/250
 
